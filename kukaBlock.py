@@ -112,6 +112,7 @@ def main():
       print('Contact Force: {}'.format(contactInfo[2][9]))
       contactForceRobotBlock[simTime] = contactInfo[2][9]
 
+  contactForceRobotBlock[:3000] = 0
   plt.plot(contactForceRobotBlock)
   plt.show()
 
