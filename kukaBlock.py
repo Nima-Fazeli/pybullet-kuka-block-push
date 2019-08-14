@@ -6,7 +6,7 @@ def main():
 
     # push direction with respect to the positive y axis
     theta = 0.0
-    kb.simulate(theta)
+    traj = kb.simulate(theta)
 
 if __name__ == "__main__":
     main()

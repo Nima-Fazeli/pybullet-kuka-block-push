@@ -115,6 +115,7 @@ class KukaBlock():
 
         self.traj[simTime, :] = np.array([x, y, z, x, y])
         self.contactForce[:1000] = 0
+        return self.traj
 
     def getInitConds(self):
       self.robotInitPoseCart = [-0.4, -0.2, 0.01] # (x,y,z)
