@@ -66,6 +66,8 @@ def main():
 
   traj = np.zeros((simLength, 3))
   contactForceRobotBlock = np.zeros((simLength, ))
+  contactCountRobotBlock = np.empty_like(contactForceRobotBlock)
+
   jointInds = [i for i in range(numJoints)]
   posGains = [0.3] * numJoints
   velGains = [1.0] * numJoints
@@ -103,17 +105,35 @@ def main():
     ls = p.getLinkState(kukaId, kukaEndEffectorIndex)
 
     # get contact information
-    contactInfo = p.getContactPoints(blockId)
+    contactInfo = p.getContactPoints(kukaId, blockId)
     # pdb.set_trace()
     if len(contactInfo)>0:
-      print('Num of Contact points: {}'.format(len(contactInfo)))
-      print('Contact point: {}'.format(contactInfo[2][5]))
-      print('Contact Normal: {}'.format(contactInfo[2][7]))
-      print('Contact Force: {}'.format(contactInfo[2][9]))
-      contactForceRobotBlock[simTime] = contactInfo[2][9]
+      # print('Num of Contact points: {}'.format(len(contactInfo)))
+      # print('Contact point: {}'.format(contactInfo[:][5]))
+      # print('Contact Normal: {}'.format(contactInfo[:][7]))
+      # print('Contact Force: {}'.format(contactInfo[:][9]))
 
-  contactForceRobotBlock[:3000] = 0
-  plt.plot(contactForceRobotBlock)
+      f_c_temp = 0
+      for i in range(len(contactInfo)):
+        f_c_temp += contactInfo[i][9]
+      contactForceRobotBlock[simTime] = f_c_temp
+      contactCountRobotBlock[simTime] = len(contactInfo)
+
+  contactForceRobotBlock[:1000] = 0
+
+  fig_force = plt.figure()
+  ax_force = fig_force.add_subplot()
+  ax_force.plot(contactForceRobotBlock)
+  ax_force.set_xlabel('Time-step')
+  ax_force.set_ylabel('Net normal force')
+
+  fig_cont = plt.figure()
+  ax_cont = fig_cont.add_subplot()
+  ax_cont.plot(contactCountRobotBlock)
+  ax_cont.set_xlabel('Time-step')
+  ax_cont.set_ylabel('Number of registered contacts')
+
+
   plt.show()
 
 if __name__=='__main__':
